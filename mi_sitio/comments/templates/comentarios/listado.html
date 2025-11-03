@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<a href="{% url 'comments:add' %}" target="_blank">Crear</a>
+    <h1>Listado de Comentarios</h1>
+    <ul>
+        {% for comentario in listado %}
+            <li>{{ comentario.texto }}: {{ comentario.fecha_posted }} 
+            <!--a href="/tareas/actualizar/{{ comentario.id }}">Editar</a-->
+                 -- <a href="{% url 'comments:actualizar'  comentario.id %}">Editar</a>/
+                 
+                 <form action="{% url 'comments:eliminar'  comentario.id %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                <input type="submit" value="Eliminar"></button>     
+                </form>              
+                    
+                
+            </li>
+        {% empty %}
+            <li>No hay comentarios disponibles.</li>
+        {% endfor %}
+         </ul>
+        <nav>
+            <ul class="pagination justify-content-center">
+                {% if listado.has_previous %}
+                    <li class="page-item"><a  class="page-link" href="?page={{ listado.previous_page_number }}">⬅️</a></li>
+                {% endif %}
+                    <li>             
+                        {% for num in listado.paginator.page_range %}
+                            {% if listado.number == num %}
+                                <a href="?page={{ num }}" class="page-link activate"><strong>{{ num }}</strong></a>
+                            {% else %}
+                                <a href="?page={{ num }}"  class="page-link">{{ num }}</a>
+                            {% endif %}
+                        {% endfor %}
+                    </li>
+                {% if listado.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ listado.next_page_number }}">➡️</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+        Página {{ listado.number }} de {{ listado.paginator.num_pages }} 
+   
+</body>
+</html>
